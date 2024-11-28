@@ -166,9 +166,10 @@ end)
 local Button = MainTab:CreateButton({
    Name = "Esp",
    Callback = function()
- -- Roblox script to highlight torsos with selection boxes and add nametags above heads
+-- Roblox script to highlight torsos with selection boxes and add nametags above heads
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
 
 -- Settings for the Selection Box
 local selectionBoxSize = Vector3.new(2, 3, 2)  -- Size of the selection box (Adjust as needed)
@@ -231,10 +232,14 @@ local function removeSelectionBoxAndNametag(character)
 end
 
 -- Create Selection Boxes and Nametags for players already in the game
-for _, player in ipairs(Players:GetPlayers()) do
-    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-        createSelectionBox(player.Character)
-        createNametag(player.Character, player.Name)
+local function refreshHighlights()
+    -- Loop through all players in the game
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            -- Ensure the selection box and nametag are created
+            createSelectionBox(player.Character)
+            createNametag(player.Character, player.Name)
+        end
     end
 end
 
@@ -256,20 +261,14 @@ Players.PlayerRemoving:Connect(function(player)
     end
 end)
 
--- Continuously update for any changes (e.g., in case a player's character is reset)
-game:GetService("RunService").Heartbeat:Connect(function()
-    for _, player in ipairs(Players:GetPlayers()) do
-        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            -- Ensure the selection box and nametag are updated or recreated if needed
-            if not player.Character:FindFirstChildOfClass("SelectionBox") then
-                createSelectionBox(player.Character)
-            end
-            if not player.Character.Head:FindFirstChildOfClass("BillboardGui") then
-                createNametag(player.Character, player.Name)
-            end
-        end
-    end
+-- Refresh all selection boxes and nametags every 60 seconds
+RunService.Heartbeat:Connect(function()
+    wait(60)  -- Wait for 60 seconds
+    refreshHighlights()  -- Refresh the selection boxes and nametags
 end)
+
+-- Initial creation of Selection Boxes and Nametags
+refreshHighlights()
 
    end,
 })
