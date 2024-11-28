@@ -272,3 +272,121 @@ refreshHighlights()
 
    end,
 })
+
+local Button = Tab:CreateButton({
+   Name = "Head Aim Lock",
+   Callback = function()
+ -- Aim Assist Script for Roblox (Da Hood-like game)
+-- This script provides smooth camera control and helps aim at nearby players' heads.
+-- Aim assist can be toggled using the Q key, and it stays locked onto the first player it targets.
+-- No target switching will occur.
+
+local player = game.Players.LocalPlayer
+local camera = game.Workspace.CurrentCamera
+local userInputService = game:GetService("UserInputService")
+local mouse = player:GetMouse()
+
+-- Settings for Aim Assist
+local aimAssistRange = 50  -- Range in studs to detect enemies
+local aimSpeed = 0.2  -- Speed of smoothing the aim towards the target
+local lockedTarget = nil  -- Locked target for aim assist
+
+-- Variable to track if Aim Assist is enabled
+local isAimAssistEnabled = false
+
+-- Visual Feedback: Show a red circle around the locked target (for demonstration purposes)
+local function createTargetIndicator(target)
+    local billboard = Instance.new("BillboardGui")
+    billboard.Adornee = target.Character.Head  -- Use the Head part instead of HumanoidRootPart
+    billboard.Size = UDim2.new(0, 10, 0, 10)
+    billboard.StudsOffset = Vector3.new(0, 2, 0)  -- Position the indicator slightly above the target
+    billboard.Parent = target.Character
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red circle
+    frame.BackgroundTransparency = 0.5  -- Semi-transparent
+    frame.Parent = billboard
+
+    return billboard
+end
+
+-- Remove the target indicator when no longer needed
+local function removeTargetIndicator(target)
+    if target and target.Character and target.Character:FindFirstChild("Head") then
+        local billboard = target.Character:FindFirstChildOfClass("BillboardGui")
+        if billboard then
+            billboard:Destroy()
+        end
+    end
+end
+
+-- Function to find the closest enemy within range
+local function getClosestEnemy()
+    local closestEnemy = nil
+    local shortestDistance = aimAssistRange  -- Start with a maximum distance
+
+    for _, otherPlayer in ipairs(game.Players:GetPlayers()) do
+        if otherPlayer ~= player and otherPlayer.Character and otherPlayer.Character:FindFirstChild("Head") then
+            local distance = (player.Character.HumanoidRootPart.Position - otherPlayer.Character.Head.Position).Magnitude
+            if distance < shortestDistance then
+                closestEnemy = otherPlayer
+                shortestDistance = distance
+            end
+        end
+    end
+
+    return closestEnemy
+end
+
+-- Function to smoothly adjust the camera aim towards the target
+local function smoothCameraAim(target)
+    if not target or not target.Character or not target.Character:FindFirstChild("Head") then return end
+    
+    local targetPos = target.Character.Head.Position  -- Aim at the target's head
+    local targetDirection = (targetPos - camera.CFrame.Position).unit  -- Direction to the target
+    
+    -- Smoothly rotate the camera towards the target direction
+    local newCFrame = camera.CFrame:lerp(CFrame.lookAt(camera.CFrame.Position, targetPos), aimSpeed)
+    camera.CFrame = newCFrame
+end
+
+-- Detect when the Q key is pressed to toggle Aim Assist
+userInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    
+    -- When the Q key is pressed, toggle the Aim Assist
+    if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.Q then
+        isAimAssistEnabled = not isAimAssistEnabled  -- Toggle Aim Assist state
+        
+        if isAimAssistEnabled then
+            -- If Aim Assist is enabled, lock onto the closest enemy
+            lockedTarget = getClosestEnemy()
+            if lockedTarget then
+                print("Aim Assist Enabled - Locked onto " .. lockedTarget.Name)
+                -- Create the target indicator
+                createTargetIndicator(lockedTarget)
+            else
+                print("Aim Assist Enabled - No target in range")
+            end
+        else
+            -- If Aim Assist is disabled, unlock the target
+            print("Aim Assist Disabled")
+            -- Remove the target indicator
+            if lockedTarget then
+                removeTargetIndicator(lockedTarget)
+            end
+            lockedTarget = nil
+        end
+    end
+end)
+
+-- Main loop to check for enemies and adjust camera when aiming
+game:GetService("RunService").Heartbeat:Connect(function()
+    if isAimAssistEnabled and lockedTarget then
+        -- If Aim Assist is enabled and there's a locked target, apply aim assist
+        smoothCameraAim(lockedTarget)
+    end
+end)
+   end,
+})
