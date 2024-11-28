@@ -273,7 +273,7 @@ refreshHighlights()
    end,
 })
 
-local Button = Tab:CreateButton({
+local Button = MainTab:CreateButton({
    Name = "Head Aim Lock",
    Callback = function()
  -- Aim Assist Script for Roblox (Da Hood-like game)
@@ -351,12 +351,12 @@ local function smoothCameraAim(target)
     camera.CFrame = newCFrame
 end
 
--- Detect when the Q key is pressed to toggle Aim Assist
+-- Detect when the E key is pressed to toggle Aim Assist
 userInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     
-    -- When the Q key is pressed, toggle the Aim Assist
-    if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.Q then
+    -- When the E key is pressed, toggle the Aim Assist
+    if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.E then
         isAimAssistEnabled = not isAimAssistEnabled  -- Toggle Aim Assist state
         
         if isAimAssistEnabled then
