@@ -1,7 +1,7 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "Icy's Hood Script",
+   Name = "Icy's Lcoks Script",
    Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
    LoadingTitle = "Icy's Interface Suite",
    LoadingSubtitle = "by Icy",
@@ -24,7 +24,7 @@ local Window = Rayfield:CreateWindow({
 
    KeySystem = true, -- Set this to true to use our key system
    KeySettings = {
-      Title = "Icy's Hood | Key",
+      Title = "Icy's Lock | Key",
       Subtitle = "In Video Discription",
       Note = "Join Discord For More", -- Use this to tell the user how to get a key
       FileName = "IcysHoodKey", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
@@ -39,7 +39,7 @@ local MainSection = MainTab:CreateSection("Combat")
 
 Rayfield:Notify({
    Title = "You successfully excuted the Script!",
-   Content = "Hood Gui",
+   Content = "Lock Gui",
    Duration = 4.5,
    Image = nil,
 })
