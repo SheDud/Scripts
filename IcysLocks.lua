@@ -45,7 +45,7 @@ Rayfield:Notify({
 })
 
 local Button = MainTab:CreateButton({
-   Name = "Aim Lock",
+   Name = "Aim Lock | Q",
    Callback = function()
 -- Aim Assist Script for Roblox (Da Hood-like game)
 -- This script provides smooth camera control and helps aim at nearby players.
@@ -164,7 +164,7 @@ end)
 })
 
 local Button = MainTab:CreateButton({
-   Name = "Head Lock",
+   Name = "Head Lock | E",
    Callback = function()
  -- Aim Assist Script for Roblox (Da Hood-like game)
 -- This script provides smooth camera control and helps aim at nearby players' heads.
